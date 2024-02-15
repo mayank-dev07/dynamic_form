@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Select, Radio, DatePicker } from "antd";
+import { Button, Input, Select, Radio, DatePicker, TimePicker } from "antd";
+import dayjs from "dayjs";
+const format = "HH:mm";
+const { TextArea } = Input;
 
 const InputType = (props) => {
-  console.log(props.props.items);
+  console.log(props.props);
   const [type, setType] = useState(props.props);
 
   const selectType = (type) => {
-    console.log(type.values);
+    console.log(type);
     switch (type.type) {
       case "Text":
         return <Input placeholder={type.placeholder} className="w-full" />;
@@ -21,6 +24,7 @@ const InputType = (props) => {
             placeholder={type.placeholder}
             className="w-full"
             options={type.values}
+            mode={type.mode}
           />
         );
       case "Radio":
@@ -32,7 +36,23 @@ const InputType = (props) => {
       case "Datepicker":
         return (
           <>
-            <DatePicker className="w-full" />
+            <DatePicker className="w-full" placeholder={type.placeholder} />
+          </>
+        );
+      case "TimePicker":
+        return (
+          <>
+            <TimePicker className="w-full" placeholder={type.placeholder} />
+          </>
+        );
+      case "Textarea":
+        return (
+          <>
+            <TextArea
+              rows={type.rows}
+              placeholder={type.placeholder}
+              className="w-full"
+            />
           </>
         );
 

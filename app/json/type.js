@@ -5,4 +5,5 @@ export const type = [
   { value: "Radio" },
   { value: "Datepicker" },
   { value: "Textarea" },
+  { value: "TimePicker" },
 ];

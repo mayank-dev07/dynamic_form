@@ -14,6 +14,7 @@ const Formcomponents = () => {
   const onFinish = async () => {
     try {
       const values = await form.getFieldValue();
+      console.log(values);
       setFormType((prev) => [...prev, values]);
     } catch (errorInfo) {
       console.log(errorInfo);
@@ -80,9 +81,9 @@ const Formcomponents = () => {
         </div>
 
         <div className="flex w-full ">
-          <div className="w-1/2 md:w-1/4 flex flex-col">
+          <div className="w-1/2 md:w-1/4 flex flex-col px-4">
             <div className="font-serif font-bold text-base md:text-lg my-5 ">
-              ENTER THE SIZE OF INPUT FIELD
+              ENTER THE GRID
             </div>
             <Form.Item
               name="grid"
@@ -96,24 +97,46 @@ const Formcomponents = () => {
             </Form.Item>
           </div>
 
-          <div className="w-1/2 md:w-1/4  flex flex-col ml-8">
-            <p className="font-serif font-bold text-base md:text-lg my-5">
-              ENTER THE NUMBERS OF ROWS
-            </p>
-            <Form.Item
-              name="grid"
-              label="Rows"
-              rules={[{ required: true, message: "Please enter grid" }]}
-              className="w-full">
-              <Input placeholder="write the number of rows" />
-            </Form.Item>
-          </div>
+          {data == "Textarea" ? (
+            <div className="w-1/2 md:w-1/4  flex flex-col ml-8">
+              <p className="font-serif font-bold text-base md:text-lg my-5">
+                ENTER THE NUMBERS OF ROWS
+              </p>
+              <Form.Item
+                name="rows"
+                label="Rows"
+                rules={[{ required: true, message: "Please enter rows" }]}
+                className="w-full">
+                <Input placeholder="write the number of rows" />
+              </Form.Item>
+            </div>
+          ) : (
+            <></>
+          )}
+
+          {data == "Select" ? (
+            <div className="w-1/2 md:w-1/4 flex flex-col px-4">
+              <div className="font-serif font-bold text-base md:text-lg my-5 ">
+                ENTER THE MODE
+              </div>
+              <Form.Item name="mode" label="Mode" className="w-full">
+                <Select
+                  placeholder="Please select a input length"
+                  options={[
+                    { label: "Multiple", value: "multiple" },
+                    { label: "None", value: "none" },
+                  ]}></Select>
+              </Form.Item>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
 
         {props.includes(data) && (
           <div className="flex flex-col w-full">
-            <p className="font-serif font-bold text-lg my-5">
-              ENTER THE DROPDOWN FIELDS
+            <p className="font-serif font-bold text-lg my-5 uppercase">
+              Enter&nbsp;the&nbsp;{data}&nbsp;Options
             </p>
             <div className="w-full flex flex-wrap">
               <Form.List name="values">
@@ -151,7 +174,7 @@ const Formcomponents = () => {
         )}
 
         <div className="w-full flex justify-center">
-          <Button htmlType="submit" className="bg-black text-white w-1/6">
+          <Button htmlType="submit" className="bg-black text-white w-min">
             Submit
           </Button>
         </div>
@@ -160,7 +183,7 @@ const Formcomponents = () => {
       {formType.length > 0 && (
         <>
           <div className="w-full flex justify-center items-center mt-16">
-            <Form className="w-8/12">
+            <Form className="px-4 md:px-2 md:w-10/12 lg:w-8/12">
               <PreviewForm props={formType} />
             </Form>
           </div>

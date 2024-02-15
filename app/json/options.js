@@ -1,1 +1,1 @@
-export const props = ["select", "radio"];
+export const props = ["Select", "Radio"];
