@@ -3,7 +3,6 @@ import { Form } from "antd";
 import InputType from "./InputType";
 
 const PreviewForm = (props) => {
-  // console.log(props);
   const [preview, setPrewiew] = useState(props.props);
 
   useEffect(() => {
@@ -22,26 +21,21 @@ const PreviewForm = (props) => {
   return (
     <>
       <div className="w-full flex flex-wrap justify-evenly">
-        {preview.map((items, index) => {
-          return (
-            <Form.Item
-              key={index}
-              name={items.label}
-              label={items.label}
-              rules={[
-                {
-                  required: stringToBool(items.required),
-                  message: items.message,
-                },
-                // {
-                //   type: {items.type},
-                // },
-              ]}
-              className={items.grid}>
-              <InputType props={{ items }} />
-            </Form.Item>
-          );
-        })}
+        {preview.map((items, index) => (
+          <Form.Item
+            key={index}
+            name={items.label}
+            label={items.label}
+            rules={[
+              {
+                required: stringToBool(items.required),
+                message: items.message,
+              },
+            ]}
+            className={items.grid}>
+            <InputType props={{ items }} />
+          </Form.Item>
+        ))}
       </div>
     </>
   );
