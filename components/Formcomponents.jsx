@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Select, Checkbox, Row, Col, Space } from "antd";
+import React, { useState } from "react";
+import { Button, Form, Input, Select } from "antd";
 import { CloseOutlined, FolderAddOutlined } from "@ant-design/icons";
 import PreviewForm from "./PreviewForm";
 import { type } from "../app/json/type";
@@ -14,8 +14,8 @@ const Formcomponents = () => {
   const onFinish = async () => {
     try {
       const values = await form.getFieldValue();
-      console.log(values);
       setFormType((prev) => [...prev, values]);
+      // form.resetFields();
     } catch (errorInfo) {
       console.log(errorInfo);
     }
@@ -175,7 +175,7 @@ const Formcomponents = () => {
 
         <div className="w-full flex justify-center">
           <Button htmlType="submit" className="bg-black text-white w-min">
-            Submit
+            Preview
           </Button>
         </div>
       </Form>
@@ -183,9 +183,8 @@ const Formcomponents = () => {
       {formType.length > 0 && (
         <>
           <div className="w-full flex justify-center items-center mt-16">
-            <Form className="px-4 md:px-2 md:w-10/12 lg:w-8/12">
-              <PreviewForm props={formType} />
-            </Form>
+            <PreviewForm props={formType} />
+            {/* </Form> */}
           </div>
         </>
       )}
