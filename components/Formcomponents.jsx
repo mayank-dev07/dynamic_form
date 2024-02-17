@@ -13,11 +13,13 @@ const Formcomponents = () => {
   const [form] = Form.useForm();
   const onFinish = (values) => {
     try {
-      console.log(values.values);
-      values.values = values.values.map((item) => ({
-        ...item,
-        label: item.value,
-      }));
+      console.log(values);
+      if (values.values) {
+        values.values = values.values.map((item) => ({
+          ...item,
+          label: item.value,
+        }));
+      }
       console.log(values);
       setFormType((prev) => [...prev, values]);
       form.resetFields();
