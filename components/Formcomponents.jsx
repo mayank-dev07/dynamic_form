@@ -11,11 +11,16 @@ const Formcomponents = () => {
   const [formType, setFormType] = useState([]);
   const [data, setData] = useState("");
   const [form] = Form.useForm();
-  const onFinish = async () => {
+  const onFinish = (values) => {
     try {
-      const values = await form.getFieldValue();
+      console.log(values.values);
+      values.values = values.values.map((item) => ({
+        ...item,
+        label: item.value,
+      }));
+      console.log(values);
       setFormType((prev) => [...prev, values]);
-      // form.resetFields();
+      form.resetFields();
     } catch (errorInfo) {
       console.log(errorInfo);
     }
@@ -28,8 +33,8 @@ const Formcomponents = () => {
         onFinish={onFinish}
         className="w-11/12 flex flex-wrap justify-evenly">
         <div className="flex flex-col w-full">
-          <p className="font-serif font-bold text-lg mb-5">
-            ENTER BASIC INFO ABOUT FORM INPUT
+          <p className="font-serif font-bold text-base md:text-lg mb-5 uppercase flex justify-center">
+            enter&nbsp;basics&nbsp;info&nbsp;about&nbsp;form&nbsp;input
           </p>
           <div className="w-full flex justify-evenly">
             <div className="w-1/2 flex flex-col md:flex-row">
@@ -70,9 +75,9 @@ const Formcomponents = () => {
               <Form.Item
                 name="placeholder"
                 label="Placeholder"
-                rules={[
-                  { required: true, message: "Please enter placeholder" },
-                ]}
+                // rules={[
+                //   { required: true, message: "Please enter placeholder" },
+                // ]}
                 className="w-full md:w-1/2 px-4">
                 <Input placeholder="write a placeholder" />
               </Form.Item>
@@ -100,7 +105,7 @@ const Formcomponents = () => {
           {data == "Textarea" ? (
             <div className="w-1/2 md:w-1/4  flex flex-col ml-8">
               <p className="font-serif font-bold text-base md:text-lg my-5">
-                ENTER THE NUMBERS OF ROWS
+                ENTER&nbsp;THE&nbsp;NUMBERS&nbsp;OF&nbsp;ROWS
               </p>
               <Form.Item
                 name="rows"
@@ -146,7 +151,8 @@ const Formcomponents = () => {
                       <div key={key} className="flex mr-4 ">
                         <Form.Item
                           {...restField}
-                          name={([name, "value"], [name, "label"])}
+                          name={[name, "value"]}
+                          label={"value"}
                           rules={[{ required: true, message: "Enter option" }]}>
                           <Input placeholder="Option" />
                         </Form.Item>
