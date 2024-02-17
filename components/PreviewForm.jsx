@@ -25,11 +25,14 @@ const PreviewForm = (props) => {
     }
   };
 
-  const handleClick = async () => {
-    console.log(preview);
-    await addDoc(collection(db, "dynamic_form"), {
-      preview,
-    });
+  const handleClick = (preview) => {
+    console.log({ preview });
+    console.log(JSON.stringify({ preview }));
+    console.log(JSON.parse(JSON.stringify({ preview })));
+    addDoc(
+      collection(db, "dynamic_form"),
+      JSON.parse(JSON.stringify({ preview }))
+    );
     router.push("/GenerateForm");
   };
 
@@ -45,29 +48,33 @@ const PreviewForm = (props) => {
           <div className="w-full flex flex-wrap justify-between">
             {preview.map((items, index) => (
               <>
-                <Form.Item
-                  key={index}
-                  name={items.label}
-                  label={items.label}
-                  rules={[
-                    {
-                      required: stringToBool(items.required),
-                      message: items.message,
-                    },
-                  ]}
-                  className={`${items.grid} items-start px-4`}>
-                  <InputType props={{ items }} />
-                </Form.Item>
+                <div className="flex w-full">
+                  <Form.Item
+                    key={index}
+                    name={items.label}
+                    label={items.label}
+                    rules={[
+                      {
+                        required: stringToBool(items.required),
+                        message: items.message,
+                      },
+                    ]}
+                    className={`${items.grid} items-start px-4`}>
+                    <InputType props={{ items }} />
+                  </Form.Item>
 
-                <Button
-                  type="none"
-                  onClick={() => remove(index)}
-                  icon={<CloseOutlined />}></Button>
+                  <Button
+                    type="none"
+                    onClick={() => remove(index)}
+                    icon={<CloseOutlined />}></Button>
+                </div>
               </>
             ))}
           </div>
           <div className="w-full flex justify-center">
-            <Button className="bg-black text-white w-min" onClick={handleClick}>
+            <Button
+              className="bg-black text-white w-min"
+              onClick={() => handleClick(preview)}>
               Submit
             </Button>
           </div>

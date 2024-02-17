@@ -14,6 +14,9 @@ const Formcomponents = () => {
   const onFinish = (values) => {
     try {
       console.log(values);
+      // if(values.label.trim()==""){
+
+      // }
       if (values.values) {
         values.values = values.values.map((item) => ({
           ...item,
@@ -43,7 +46,13 @@ const Formcomponents = () => {
               <Form.Item
                 name="type"
                 label="Type"
-                rules={[{ required: true, message: "Please input your name" }]}
+                rules={[
+                  {
+                    required: true,
+                    whitespace: true,
+                    message: "Please input your name",
+                  },
+                ]}
                 className="w-full md:w-1/2 px-4">
                 <Select
                   placeholder="Please select a input type"
@@ -56,7 +65,13 @@ const Formcomponents = () => {
               <Form.Item
                 name="label"
                 label="Label"
-                rules={[{ required: true, message: "Please enter label name" }]}
+                rules={[
+                  {
+                    required: true,
+                    whitespace: true,
+                    message: "Please enter label name",
+                  },
+                ]}
                 className="w-full md:w-1/2 px-4">
                 <Input placeholder="label name" />
               </Form.Item>
@@ -77,9 +92,9 @@ const Formcomponents = () => {
               <Form.Item
                 name="placeholder"
                 label="Placeholder"
-                // rules={[
-                //   { required: true, message: "Please enter placeholder" },
-                // ]}
+                rules={[
+                  { whitespace: true, message: "Please enter placeholder" },
+                ]}
                 className="w-full md:w-1/2 px-4">
                 <Input placeholder="write a placeholder" />
               </Form.Item>
@@ -95,7 +110,13 @@ const Formcomponents = () => {
             <Form.Item
               name="grid"
               label="Grid"
-              rules={[{ required: true, message: "Please enter grid" }]}
+              rules={[
+                {
+                  required: true,
+                  whitespace: true,
+                  message: "Please enter grid",
+                },
+              ]}
               className="w-full">
               <Select
                 placeholder="Please select a input length"
@@ -112,7 +133,13 @@ const Formcomponents = () => {
               <Form.Item
                 name="rows"
                 label="Rows"
-                rules={[{ required: true, message: "Please enter rows" }]}
+                rules={[
+                  {
+                    required: true,
+                    whitespace: true,
+                    message: "Please enter rows",
+                  },
+                ]}
                 className="w-full">
                 <Input placeholder="write the number of rows" />
               </Form.Item>
@@ -155,7 +182,13 @@ const Formcomponents = () => {
                           {...restField}
                           name={[name, "value"]}
                           label={"value"}
-                          rules={[{ required: true, message: "Enter option" }]}>
+                          rules={[
+                            {
+                              required: true,
+                              whitespace: true,
+                              message: "Enter option",
+                            },
+                          ]}>
                           <Input placeholder="Option" />
                         </Form.Item>
 
