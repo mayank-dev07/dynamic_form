@@ -6,11 +6,14 @@ const { TextArea } = Input;
 
 const InputType = (props) => {
   const [type, setType] = useState(props.props);
-  const setData = useStore((state) => state.setData);
-  const data = useStore((state) => state.data);
+  // const setData = useStore((state) => state.setData);
+  // const data = useStore((state) => state.data);
+  const [data, setData] = useState({});
 
   const handleChange = (e) => {
-    // console.log(`${[e.target.name]}`, e.target.value);
+    console.log(e.target.name);
+    setData((data) => ({ ...data, [e.target.name]: e.target.value }));
+    console.log(data);
   };
 
   const selectType = (type) => {

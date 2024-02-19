@@ -33,7 +33,7 @@ const PreviewForm = (props) => {
       collection(db, "dynamic_form"),
       JSON.parse(JSON.stringify({ preview }))
     );
-    router.push("/GenerateForm");
+    // router.push("/GenerateForm");
   };
 
   const remove = (id) => {
@@ -48,26 +48,34 @@ const PreviewForm = (props) => {
           <div className="w-full flex flex-wrap justify-between">
             {preview.map((items, index) => (
               <>
-                <div className="flex w-full">
-                  <Form.Item
-                    key={index}
-                    name={items.label}
-                    label={items.label}
-                    rules={[
-                      {
-                        required: stringToBool(items.required),
-                        message: items.message,
-                      },
-                    ]}
-                    className={`${items.grid} items-start px-4`}>
+                {/* <div className="flex w-11/12"> */}
+                <Form.Item
+                  key={index}
+                  name={items.label}
+                  label={items.label}
+                  rules={[
+                    {
+                      required: stringToBool(items.required),
+                      message: items.message,
+                    },
+                  ]}
+                  className={`${items.grid} items-start px-4`}>
+                  <div className="flex">
                     <InputType props={{ items }} />
-                  </Form.Item>
+                    <Button
+                      type="none"
+                      // className="w-1/12"
+                      onClick={() => remove(index)}
+                      icon={<CloseOutlined />}></Button>
+                  </div>
+                </Form.Item>
 
-                  <Button
-                    type="none"
-                    onClick={() => remove(index)}
-                    icon={<CloseOutlined />}></Button>
-                </div>
+                {/* <Button
+                  type="none"
+                  className="w-1/12"
+                  onClick={() => remove(index)}
+                  icon={<CloseOutlined />}></Button> */}
+                {/* </div> */}
               </>
             ))}
           </div>

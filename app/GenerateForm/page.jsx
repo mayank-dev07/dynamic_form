@@ -9,10 +9,11 @@ import useStore from "@/components/zustand";
 const GenerateForm = () => {
   const [form] = Form.useForm();
   const [element, setElement] = useState([]);
-  const { data } = useStore();
+  const { data } = useStore((state) => state.data);
 
   useLayoutEffect(() => {
     const getForm = async () => {
+      // const q = query(dynamic_form,orderBy(""))
       const querySnapshot = await getDocs(collection(db, "dynamic_form"));
       let generate = [];
       querySnapshot.forEach((doc) => {
@@ -20,6 +21,7 @@ const GenerateForm = () => {
         console.log(doc.id, doc.data());
       });
       setElement(generate.slice(-1)[0].preview);
+      console.log(generate.slice(-1)[0].preview);
     };
     getForm();
   }, []);

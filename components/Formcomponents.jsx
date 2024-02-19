@@ -14,9 +14,6 @@ const Formcomponents = () => {
   const onFinish = (values) => {
     try {
       console.log(values);
-      // if(values.label.trim()==""){
-
-      // }
       if (values.values) {
         values.values = values.values.map((item) => ({
           ...item,
@@ -225,7 +222,6 @@ const Formcomponents = () => {
         <>
           <div className="w-full flex justify-center items-center mt-16">
             <PreviewForm props={formType} />
-            {/* </Form> */}
           </div>
         </>
       )}
