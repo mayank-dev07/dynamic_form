@@ -32,7 +32,7 @@ const Formcomponents = () => {
       console.log(values);
       console.log(details);
       setDetails([...details, values]);
-      // form.resetFields();
+      form.resetFields();
     } catch (errorInfo) {
       console.log(errorInfo);
     }

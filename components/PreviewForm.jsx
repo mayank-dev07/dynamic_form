@@ -11,6 +11,7 @@ import useStore from "./zustand";
 const PreviewForm = () => {
   const setData = useStore((state) => state.setData);
   const details = useStore((state) => state.data);
+  const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
 
   const stringToBool = (value) => {
@@ -23,7 +24,7 @@ const PreviewForm = () => {
   };
 
   const handleClick = (preview) => {
-    console.log({ preview });
+    messageApi.info("Form is added to firestore");
     console.log(JSON.stringify({ preview }));
     console.log(JSON.parse(JSON.stringify({ preview })));
     addDoc(
@@ -44,7 +45,10 @@ const PreviewForm = () => {
     <>
       {contextHolder}
       {details.length > 0 && (
-        <Form className="px-4 md:px-2 md:w-10/12 lg:w-8/12 w-full flex flex-wrap justify-between">
+        <Form
+          className="px-4 md:px-2 md:w-10/12 lg:w-8/12 w-full flex flex-wrap justify-between"
+          form={form}
+          onFinish={handleClick}>
           {details.map((items, index) => (
             <>
               <Form.Item
@@ -72,10 +76,12 @@ const PreviewForm = () => {
           <div className="w-full flex justify-center">
             <Button
               className="bg-black text-white w-min"
-              onClick={() => {
-                handleClick(details);
-                messageApi.info("Form is added to firestore");
-              }}>
+              htmlType="submit"
+              // onClick={() => {
+              //   handleClick(details);
+              //   messageApi.info("Form is added to firestore");
+              // }}
+            >
               Submit
             </Button>
           </div>
