@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Select } from "antd";
 import { CloseOutlined, FolderAddOutlined } from "@ant-design/icons";
 import PreviewForm from "./PreviewForm";
@@ -6,11 +6,19 @@ import { type } from "../app/json/type";
 import { required } from "../app/json/required";
 import { grid } from "../app/json/grid";
 import { props } from "../app/json/options";
+import useStore from "./zustand";
 
 const Formcomponents = () => {
-  const [formType, setFormType] = useState([]);
+  // const [formType, setFormType] = useState([]);
+  const details = useStore((state) => state.data);
+  const setDetails = useStore((state) => state.setData);
   const [data, setData] = useState("");
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    console.log(details);
+  }, [details]);
+
   const onFinish = (values) => {
     try {
       console.log(values);
@@ -20,9 +28,11 @@ const Formcomponents = () => {
           label: item.value,
         }));
       }
+      values.value = "";
       console.log(values);
-      setFormType((prev) => [...prev, values]);
-      form.resetFields();
+      console.log(details);
+      setDetails([...details, values]);
+      // form.resetFields();
     } catch (errorInfo) {
       console.log(errorInfo);
     }
@@ -218,10 +228,10 @@ const Formcomponents = () => {
         </div>
       </Form>
 
-      {formType.length > 0 && (
+      {details.length > 0 && (
         <>
           <div className="w-full flex justify-center items-center mt-16">
-            <PreviewForm props={formType} />
+            <PreviewForm props={details} />
           </div>
         </>
       )}

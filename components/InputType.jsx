@@ -5,27 +5,29 @@ import useStore from "./zustand";
 const { TextArea } = Input;
 
 const InputType = (props) => {
+  const details = useStore((state) => state.data);
   const [type, setType] = useState(props.props);
-  // const setData = useStore((state) => state.setData);
-  // const data = useStore((state) => state.data);
-  const [data, setData] = useState({});
 
-  const handleChange = (e) => {
-    console.log(e.target.name);
-    setData((data) => ({ ...data, [e.target.name]: e.target.value }));
-    console.log(data);
-  };
+  useEffect(() => {
+    console.log(props.props);
+    setType(props.props);
+  }, [props]);
 
   const selectType = (type) => {
-    // console.log(type);
     switch (type.type) {
       case "Text":
         return (
           <Input
             placeholder={type.placeholder}
             className="w-full"
-            onChange={handleChange}
             name={type.label}
+            onChange={(e) => {
+              details.find((obj) => {
+                if (obj.label == type.label) {
+                  obj.value = e.target.value;
+                }
+              });
+            }}
           />
         );
       case "Password":
@@ -33,8 +35,14 @@ const InputType = (props) => {
           <Input.Password
             placeholder={type.placeholder}
             className="w-full"
-            onChange={handleChange}
             name={type.label}
+            onChange={(e) => {
+              details.find((obj) => {
+                if (obj.label == type.label) {
+                  obj.value = e.target.value;
+                }
+              });
+            }}
           />
         );
       case "Select":
@@ -43,10 +51,16 @@ const InputType = (props) => {
             showSearch
             placeholder={type.placeholder}
             className="w-full"
-            onChange={handleChange}
             name={type.label}
             options={type.values}
             mode={type.mode}
+            onChange={(e) => {
+              details.find((obj) => {
+                if (obj.label == type.label) {
+                  obj.value = e;
+                }
+              });
+            }}
           />
         );
       case "Radio":
@@ -55,7 +69,13 @@ const InputType = (props) => {
             <Radio.Group
               options={type.values}
               className="w-full"
-              onChange={handleChange}
+              onChange={(e) => {
+                details.find((obj) => {
+                  if (obj.label == type.label) {
+                    obj.value = e.target.value;
+                  }
+                });
+              }}
               name={type.label}>
               {type.values}
             </Radio.Group>
@@ -66,7 +86,13 @@ const InputType = (props) => {
           <>
             <DatePicker
               className="w-full"
-              onChange={handleChange}
+              onChange={(e) => {
+                details.find((obj) => {
+                  if (obj.label == type.label) {
+                    obj.value = e.target.value;
+                  }
+                });
+              }}
               name={type.label}
               placeholder={type.placeholder}
             />
@@ -77,7 +103,13 @@ const InputType = (props) => {
           <>
             <TimePicker
               className="w-full"
-              onChange={handleChange}
+              onChange={(e) => {
+                details.find((obj) => {
+                  if (obj.label == type.label) {
+                    obj.value = e.target.value;
+                  }
+                });
+              }}
               name={type.label}
               placeholder={type.placeholder}
             />
@@ -90,7 +122,13 @@ const InputType = (props) => {
               rows={type.rows}
               placeholder={type.placeholder}
               className="w-full"
-              onChange={handleChange}
+              onChange={(e) => {
+                details.find((obj) => {
+                  if (obj.label == type.label) {
+                    obj.value = e.target.value;
+                  }
+                });
+              }}
               name={type.label}
             />
           </>
@@ -98,10 +136,7 @@ const InputType = (props) => {
     }
   };
 
-  useEffect(() => {
-    setType(props.props);
-  }, [props]);
-  return <>{selectType(type.items)}</>;
+  return <>{selectType(type)}</>;
 };
 
 export default InputType;
