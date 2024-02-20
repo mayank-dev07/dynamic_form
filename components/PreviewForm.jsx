@@ -5,7 +5,8 @@ import { Form, Button, message } from "antd";
 import InputType from "./InputType";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/app/firebase";
-// import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/app/firebase";
 import useStore from "./zustand";
 
 const PreviewForm = () => {
@@ -23,17 +24,27 @@ const PreviewForm = () => {
     }
   };
 
-  const handleClick = (preview) => {
-    messageApi.info("Form is added to firestore");
-    console.log(JSON.stringify({ preview }));
-    console.log(JSON.parse(JSON.stringify({ preview })));
-    addDoc(
-      collection(db, "dynamic_form"),
-      JSON.parse(JSON.stringify({ preview }))
-    );
-    setTimeout(() => {
-      setData([]);
-    }, 1000);
+  useEffect(() => {}, []);
+
+  const handleClick = async () => {
+    console.log(details);
+    onAuthStateChanged(auth, (user) => {
+      console.log(user);
+      if (user) {
+        messageApi.info("Form is added to firestore");
+        console.log(user.uid);
+        addDoc(
+          collection(db, "dynamic_form", user.uid, "json"),
+          JSON.parse(JSON.stringify({ details }))
+        );
+        setTimeout(() => {
+          setData([]);
+        }, 1000);
+      }
+    });
+    console.log(auth);
+    if (auth) {
+    }
   };
 
   const remove = (id) => {
