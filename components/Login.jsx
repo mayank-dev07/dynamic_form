@@ -108,7 +108,7 @@ const Login = () => {
                 },
               ]}
               className="w-full">
-              <Input placeholder="enter your password" />
+              <Input.Password placeholder="enter your password" />
             </Form.Item>
             <div>
               <button

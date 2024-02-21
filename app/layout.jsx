@@ -35,6 +35,7 @@ export default function RootLayout({ children }) {
   };
 
   useLayoutEffect(() => {
+    console.log(pathName);
     onAuthStateChanged(auth, (user) => {
       console.log(user);
 
@@ -44,7 +45,7 @@ export default function RootLayout({ children }) {
         router.push("/");
       }
     });
-  }, []);
+  }, [pathName]);
 
   const showForms = () => {
     console.log(pathName);
@@ -59,7 +60,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="w-full h-full">
-        {logged.email ? (
+        {pathName == "/" ? (
           <></>
         ) : (
           <header className="mt-8">

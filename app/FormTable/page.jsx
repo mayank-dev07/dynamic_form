@@ -95,15 +95,11 @@ const FormTable = () => {
 
   return (
     <>
-      <div className="w-screen">
-        <div className="w-full flex justify-center">
-          <p className="py-12 text-lg">Form Table</p>
-        </div>
+      <div className="w-screen py-12">
         <div className="w-full flex justify-center items-center">
           <Table
             bordered
             scroll={{ x: "80vw" }}
-            // sortDirections={x}
             columns={columns}
             dataSource={data}
             className="w-11/12"
