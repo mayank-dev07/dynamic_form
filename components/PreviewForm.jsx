@@ -24,8 +24,6 @@ const PreviewForm = () => {
     }
   };
 
-  useEffect(() => {}, []);
-
   const handleClick = async () => {
     console.log(details);
     onAuthStateChanged(auth, (user) => {
@@ -33,9 +31,12 @@ const PreviewForm = () => {
       if (user) {
         messageApi.info("Form is added to firestore");
         console.log(user.uid);
+        console.log(details);
+        const uploadToFirebase = { id: user.uid, form: details };
+        console.log(uploadToFirebase);
         addDoc(
-          collection(db, "dynamic_form", user.uid, "json"),
-          JSON.parse(JSON.stringify({ details }))
+          collection(db, "dynamic_form"),
+          JSON.parse(JSON.stringify({ uploadToFirebase }))
         );
         setTimeout(() => {
           setData([]);

@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Select } from "antd";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { Button, Form, Input, Select, message, Drawer } from "antd";
 import { CloseOutlined, FolderAddOutlined } from "@ant-design/icons";
 import PreviewForm from "../../components/PreviewForm";
 import { type } from "../json/type";
@@ -8,17 +8,13 @@ import { required } from "../json/required";
 import { grid } from "../json/grid";
 import { props } from "../json/options";
 import useStore from "../../components/zustand";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "../firebase";
-import { useRouter } from "next/navigation";
-import { LogoutOutlined } from "@ant-design/icons";
 
 const Formcomponents = () => {
-  const router = useRouter();
   const details = useStore((state) => state.data);
   const setDetails = useStore((state) => state.setData);
   const [data, setData] = useState("");
   const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     console.log(details);
@@ -28,10 +24,15 @@ const Formcomponents = () => {
     try {
       console.log(values);
       if (values.values) {
+        // if (values.values.length > 1) {
         values.values = values.values.map((item) => ({
           ...item,
           label: item.value,
         }));
+        // } else {
+        // messageApi.info("Atleast 2 option must be there");
+
+        // }
       }
       values.value = "";
       console.log(values);
@@ -43,41 +44,11 @@ const Formcomponents = () => {
     }
   };
 
-  const logout = () => {
-    signOut(auth)
-      .then(() => {
-        router.push("/");
-        // Sign-out successful.
-      })
-      .catch((error) => {
-        // An error happened.
-      });
-  };
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      console.log(user);
-      if (!user) {
-        router.push("/");
-      }
-    });
-  }, []);
-
   return (
     <>
+      {contextHolder}
+
       <div className="w-full flex flex-col justify-center items-center py-8">
-        <div className="w-full flex justify-center ">
-          <div className="mb-5 text-xl font-serif font-bold w-full text-center">
-            Dynamic Form
-          </div>
-          <div className="flex justify-end ">
-            <LogoutOutlined
-              onClick={logout}
-              className="cursor-pointer text-xl items-start mr-4"
-            />
-          </div>
-          {/* </div> */}
-        </div>
         <Form
           form={form}
           onFinish={onFinish}
@@ -149,8 +120,8 @@ const Formcomponents = () => {
 
           <div className="flex w-full ">
             <div className="w-1/2 md:w-1/4 flex flex-col px-4">
-              <div className="font-serif font-bold text-base md:text-lg my-5 ">
-                ENTER THE GRID
+              <div className="font-serif font-bold text-base md:text-lg my-2 md:my-5 ">
+                ENTER&nbsp;THE&nbsp;GRID
               </div>
               <Form.Item
                 name="grid"
@@ -172,7 +143,7 @@ const Formcomponents = () => {
 
             {data == "Textarea" ? (
               <div className="w-1/2 md:w-1/4  flex flex-col ml-8">
-                <p className="font-serif font-bold text-base md:text-lg my-5">
+                <p className="font-serif font-bold text-base md:text-lg my-2 md:my-5">
                   ENTER&nbsp;THE&nbsp;NUMBERS&nbsp;OF&nbsp;ROWS
                 </p>
                 <Form.Item
@@ -195,8 +166,8 @@ const Formcomponents = () => {
 
             {data == "Select" ? (
               <div className="w-1/2 md:w-1/4 flex flex-col px-4">
-                <div className="font-serif font-bold text-base md:text-lg my-5 ">
-                  ENTER THE MODE
+                <div className="font-serif font-bold text-base md:text-lg my-2 md:my-5">
+                  ENTER&nbsp;THE&nbsp;MODE
                 </div>
                 <Form.Item name="mode" label="Mode" className="w-full">
                   <Select
@@ -217,12 +188,14 @@ const Formcomponents = () => {
               <p className="font-serif font-bold text-lg my-5 uppercase">
                 Enter&nbsp;the&nbsp;{data}&nbsp;Options
               </p>
-              <div className="w-full flex flex-wrap">
+              <div className="w-full flex flex-wrap h-min">
                 <Form.List name="values">
                   {(fields, { add, remove }) => (
                     <>
                       {fields.map(({ key, name, ...restField }) => (
-                        <div key={key} className="flex mr-4 ">
+                        <div
+                          key={key}
+                          className="flex md:mr-4 flex items-center h-min">
                           <Form.Item
                             {...restField}
                             name={[name, "value"]}
@@ -234,13 +207,15 @@ const Formcomponents = () => {
                                 message: "Enter option",
                               },
                             ]}>
-                            <Input placeholder="Option" />
+                            <div className="flex px-2 justify-center items-center">
+                              <Input placeholder="Option" />
+                              <Button
+                                type="none"
+                                className="flex self-center px-2 ml-4"
+                                onClick={() => remove(name)}
+                                icon={<CloseOutlined />}></Button>
+                            </div>
                           </Form.Item>
-
-                          <Button
-                            type="none"
-                            onClick={() => remove(name)}
-                            icon={<CloseOutlined />}></Button>
                         </div>
                       ))}
                       <Form.Item>
@@ -259,7 +234,7 @@ const Formcomponents = () => {
             </div>
           )}
 
-          <div className="w-full flex justify-center">
+          <div className="w-full flex justify-center mt-8">
             <Button htmlType="submit" className="bg-black text-white w-min">
               Preview
             </Button>
