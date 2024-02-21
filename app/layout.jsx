@@ -37,6 +37,7 @@ export default function RootLayout({ children }) {
   useLayoutEffect(() => {
     onAuthStateChanged(auth, (user) => {
       console.log(user);
+
       if (user) {
         setLogged({ ...logged, email: user.email, id: user.uid });
       } else {
@@ -58,62 +59,66 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="w-full h-full">
-        <header className="mt-8">
-          <Drawer
-            title={
+        {logged.email ? (
+          <></>
+        ) : (
+          <header className="mt-8">
+            <Drawer
+              title={
+                <>
+                  <div className="w-full flex justify-between items-center text-lg">
+                    <div>Details</div>
+                    <CloseOutlined onClick={onClose} />
+                  </div>
+                </>
+              }
+              placement="left"
+              closable={false}
+              onClose={onClose}
+              open={open}
+              key="left">
               <>
-                <div className="w-full flex justify-between items-center text-lg">
-                  <div>Details</div>
-                  <CloseOutlined onClick={onClose} />
+                <div className="flex flex-col w-full text-lg">
+                  <div className="w-full flex">
+                    <span className="font-bold">Email:</span>
+                    <span>&nbsp;{logged.email}</span>
+                  </div>
+                  <div className="w-full flex mt-4">
+                    <span className="font-bold">Id:</span>
+                    <span>&nbsp;{logged.id}</span>
+                  </div>
+                </div>
+                <div className="w-full flex justify-center items-center py-12">
+                  <Button
+                    className="border-2 border-black bg-black text-white p-2 h-full"
+                    onClick={showForms}>
+                    {pathName == "/GenerateForm"
+                      ? "View Previous forms"
+                      : "Generate Form"}
+                  </Button>
                 </div>
               </>
-            }
-            placement="left"
-            closable={false}
-            onClose={onClose}
-            open={open}
-            key="left">
-            <>
-              <div className="flex flex-col w-full text-lg">
-                <div className="w-full flex">
-                  <span className="font-bold">Email:</span>
-                  <span>&nbsp;{logged.email}</span>
-                </div>
-                <div className="w-full flex mt-4">
-                  <span className="font-bold">Id:</span>
-                  <span>&nbsp;{logged.id}</span>
-                </div>
-              </div>
-              <div className="w-full flex justify-center items-center py-12">
-                <Button
-                  className="border-2 border-black bg-black text-white p-2 h-full"
-                  onClick={showForms}>
-                  {pathName == "/GenerateForm"
-                    ? "View Previous forms"
-                    : "Generate Form"}
-                </Button>
-              </div>
-            </>
-          </Drawer>
+            </Drawer>
 
-          <div className="w-full flex justify-between px-4">
-            <MenuOutlined
-              onClick={showDrawer}
-              className="cursor-pointer text-xl items-start"
-            />
-
-            <div className="mb-5 text-xl font-serif font-bold w-full text-center">
-              Dynamic Form
-            </div>
-            <div className="flex justify-end ">
-              <LogoutOutlined
-                onClick={logout}
+            <div className="w-full flex justify-between px-4">
+              <MenuOutlined
+                onClick={showDrawer}
                 className="cursor-pointer text-xl items-start"
               />
+
+              <div className="mb-5 text-xl font-serif font-bold w-full text-center">
+                Dynamic Form
+              </div>
+              <div className="flex justify-end ">
+                <LogoutOutlined
+                  onClick={logout}
+                  className="cursor-pointer text-xl items-start"
+                />
+              </div>
+              {/* </div> */}
             </div>
-            {/* </div> */}
-          </div>
-        </header>
+          </header>
+        )}
         <section>{children}</section>
       </body>
     </html>
