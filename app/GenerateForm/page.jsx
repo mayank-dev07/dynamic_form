@@ -24,15 +24,10 @@ const Formcomponents = () => {
     try {
       console.log(values);
       if (values.values) {
-        // if (values.values.length > 1) {
         values.values = values.values.map((item) => ({
           ...item,
           label: item.value,
         }));
-        // } else {
-        // messageApi.info("Atleast 2 option must be there");
-
-        // }
       }
       values.value = "";
       console.log(values);
@@ -114,6 +109,15 @@ const Formcomponents = () => {
                   className="w-full md:w-1/2 px-4">
                   <Input placeholder="write a placeholder" />
                 </Form.Item>
+                {/* <Form.Item
+                  name="placeholder"
+                  label="Placeholder"
+                  rules={[
+                    { whitespace: true, message: "Please enter placeholder" },
+                  ]}
+                  className="w-full md:w-1/2 px-4">
+                  <Input placeholder="write a placeholder" />
+                </Form.Item> */}
               </div>
             </div>
           </div>

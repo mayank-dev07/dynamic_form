@@ -5,10 +5,14 @@ import { collection, getDocs } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { Space, Table, Tag } from "antd";
+import { Timeline } from "antd";
+import { comment } from "postcss";
 
 const FormTable = () => {
   const [forms] = useState([]);
   const [data, setData] = useState([]);
+  const [created, setCreated] = useState([]);
+  const [ob, setOb] = useState([]);
   let ref = useRef(false);
 
   const columns = [
@@ -44,66 +48,73 @@ const FormTable = () => {
         }
       },
     },
-    {
-      title: "values",
-      key: "values",
-      dataIndex: "values",
-      render: (tags) => {
-        console.log(tags);
-        // return (
-        //   <>
-        //     {tags.map((tag) => {
-        //       // let color = tag.length > 5 ? "geekblue" : "green";
-        //       // if (tag === "loser") {
-        //       //   color = "volcano";
-        //       // }
-        //       // return (
-        //       //   <Tag color={color} key={tag}>
-        //       //     {tag.toUpperCase()}
-        //       //   </Tag>
-        //       // );
-        //       console.log(tag);
-        //     })}
-        //   </>
-        // );
-      },
-    },
   ];
 
-  useLayoutEffect(() => {
-    const fetch = async () => {
-      const querySnapshot = await getDocs(collection(db, "dynamic_form"));
-      onAuthStateChanged(auth, (user) => {
-        console.log(user);
-        if (user) {
-          querySnapshot.docs.map((doc, index) => {
-            console.log(doc.data().uploadToFirebase);
-            if (doc.data().uploadToFirebase.id == user.uid) {
-              forms.push(doc.data().uploadToFirebase.form[0]);
-            }
-          });
-          setData(forms);
-          console.log(forms);
-        }
-      });
-    };
-    if (!ref.current) {
-      fetch();
-      ref.current = true;
+  const flatten = (array) => {
+    let result = [];
+    for (const item of array) {
+      if (Array.isArray(item)) {
+        result = result.concat(flatten(item));
+      } else {
+        result.push(item);
+      }
     }
-  }, []);
+    return result;
+  };
+
+  // useLayoutEffect(() => {
+  //   const fetch = async () => {
+  //     const querySnapshot = await getDocs(collection(db, "dynamic_form"));
+  //     onAuthStateChanged(auth, (user) => {
+  //       console.log(user);
+  //       if (user) {
+  //         querySnapshot.docs.map((doc) => {
+  //           console.log(doc.data().uploadToFirebase);
+  //           let obj = doc.data().uploadToFirebase;
+  //           forms.push(Object.keys(obj));
+
+  //           const nestedArray = forms;
+  //           const flatArray = flatten(nestedArray);
+  //           console.log(flatArray);
+
+  //           const arr = flatArray;
+  //           const uniqueSet = new Set(arr);
+  //           console.log(uniqueSet);
+  //           setCreated(() => [...uniqueSet]);
+  //         });
+  //       }
+  //     });
+  //   };
+  //   if (!ref.current) {
+  //     fetch();
+  //     ref.current = true;
+  //   }
+  // }, []);
 
   return (
     <>
       <div className="w-screen py-12">
         <div className="w-full flex justify-center items-center">
-          <Table
+          <>
+            <div className=" md:min-w-[600px] p-12">
+              <Timeline>
+                {created.map((item, index) => (
+                  <Timeline.Item
+                    key={index}
+                    className="cursor-pointer w-max !text-lg">
+                    {item}
+                  </Timeline.Item>
+                ))}
+              </Timeline>
+            </div>
+          </>
+          {/* <Table
             bordered
             scroll={{ x: "80vw" }}
             columns={columns}
             dataSource={data}
             className="w-11/12"
-          />
+          /> */}
         </div>
       </div>
     </>

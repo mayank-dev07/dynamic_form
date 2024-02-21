@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { CloseOutlined } from "@ant-design/icons";
 
-import { Form, Button, message } from "antd";
+import { Form, Button, message, Modal, Input } from "antd";
 import InputType from "./InputType";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/app/firebase";
@@ -13,7 +13,19 @@ const PreviewForm = () => {
   const setData = useStore((state) => state.setData);
   const details = useStore((state) => state.data);
   const [form] = Form.useForm();
+  const [form1] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   const stringToBool = (value) => {
     switch (value) {
@@ -26,13 +38,22 @@ const PreviewForm = () => {
 
   const handleClick = async () => {
     console.log(details);
+    showModal();
+  };
+
+  const remove = (id) => {
+    console.log(id);
+    setData(details.filter((item, index) => index != id));
+  };
+
+  const setName = (values) => {
     onAuthStateChanged(auth, (user) => {
       console.log(user);
       if (user) {
         messageApi.info("Form is added to firestore");
         console.log(user.uid);
         console.log(details);
-        const uploadToFirebase = { id: user.uid, form: details };
+        const uploadToFirebase = { id: user.uid, [values.name]: details };
         console.log(uploadToFirebase);
         addDoc(
           collection(db, "dynamic_form"),
@@ -43,19 +64,38 @@ const PreviewForm = () => {
         }, 1000);
       }
     });
-    console.log(auth);
-    if (auth) {
-    }
-  };
-
-  const remove = (id) => {
-    console.log(id);
-    setData(details.filter((item, index) => index != id));
   };
 
   return (
     <>
       {contextHolder}
+
+      <Modal
+        title="Basic Modal"
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={<></>}>
+        <Form form={form1} onFinish={setName}>
+          <Form.Item
+            name="name"
+            label="Form Name"
+            rules={[
+              {
+                whitespace: true,
+                required: true,
+                message: "enter the form name",
+              },
+            ]}>
+            <Input placeholder="enter form name" />
+          </Form.Item>
+          <div className="w-full flex justify-center">
+            <Button htmlType="submit" className="bg-black text-white">
+              Submit
+            </Button>
+          </div>
+        </Form>
+      </Modal>
+
       {details.length > 0 && (
         <Form
           className="px-4 md:px-2 md:w-10/12 lg:w-8/12 w-full flex flex-wrap justify-between"
@@ -69,6 +109,7 @@ const PreviewForm = () => {
                 label={items.label}
                 rules={[
                   {
+                    whitespace: true,
                     required: stringToBool(items.required),
                     message: items.message,
                   },
@@ -94,7 +135,7 @@ const PreviewForm = () => {
               //   messageApi.info("Form is added to firestore");
               // }}
             >
-              Submit
+              Add Name
             </Button>
           </div>
         </Form>
