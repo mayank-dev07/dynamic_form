@@ -9,10 +9,12 @@ import { auth, db } from "./firebase";
 import { usePathname, useRouter } from "next/navigation";
 import { collection, getDocs } from "firebase/firestore";
 import Link from "next/link";
+import useStore from "@/components/zustand";
 
 export default function RootLayout({ children }) {
   const [forms] = useState([]);
-  const [created, setCreated] = useState([]);
+  const form = useStore((state) => state.form);
+  const setform = useStore((state) => state.setForm);
   let ref = useRef(false);
   const router = useRouter();
   const pathName = usePathname();
@@ -66,7 +68,8 @@ export default function RootLayout({ children }) {
 
             const arr = flatArray;
             const uniqueSet = new Set(arr);
-            setCreated(() => [...uniqueSet]);
+            console.log([...uniqueSet])
+            setform([...uniqueSet]);
           });
         }
       });
@@ -88,6 +91,7 @@ export default function RootLayout({ children }) {
         router.push("/");
       }
     });
+    console.log(form)
   }, [pathName]);
 
   const showForms = () => {
@@ -98,7 +102,7 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <body className="w-full h-full">
+      <body className="w-full min-h-screen ">
         {pathName == "/" ? (
           <></>
         ) : (
@@ -123,10 +127,10 @@ export default function RootLayout({ children }) {
                     <span className="font-bold">Email:</span>
                     <span>&nbsp;{logged.email}</span>
                   </div>
-                  <div className="w-full flex mt-4">
+                  {/* <div className="w-full flex mt-4">
                     <span className="font-bold">Id:</span>
                     <span>&nbsp;{logged.id}</span>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="w-full flex justify-center items-center py-12">
                   {pathName == "/GenerateForm" ? (
@@ -138,10 +142,10 @@ export default function RootLayout({ children }) {
                       Generate Form
                     </Button>
                   )}
-                </div>
+                </div>  
                 <div>
                   <Timeline>
-                    {created.map(
+                    {form.map(
                       (item, index) =>
                         item !== "id" && (
                           <Timeline.Item

@@ -3,15 +3,21 @@ import { CloseOutlined } from "@ant-design/icons";
 
 import { Form, Button, message, Modal, Input } from "antd";
 import InputType from "./InputType";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from "@/app/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/app/firebase";
 import useStore from "./zustand";
+import { usePathname } from "next/navigation";
 
-const PreviewForm = () => {
+const PreviewForm = (props) => {
+  const [forms] = useState([]);
+  const pathname=usePathname()
+  console.log(props)
   const setData = useStore((state) => state.setData);
+  const setform = useStore((state) => state.setForm);
   const details = useStore((state) => state.data);
+  const details1 = useStore((state) => state.form);
   const [form] = Form.useForm();
   const [form1] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
@@ -20,9 +26,7 @@ const PreviewForm = () => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
+
   const handleCancel = () => {
     setIsModalOpen(false);
   };
@@ -36,6 +40,19 @@ const PreviewForm = () => {
     }
   };
 
+  const flatten = (array) => {
+    let result = [];
+    for (const item of array) {
+      if (Array.isArray(item)) {
+        result = result.concat(flatten(item));
+      } else {
+        result.push(item);
+      }
+    }
+    return result;
+  };
+
+
   const handleClick = async () => {
     console.log(details);
     showModal();
@@ -46,10 +63,16 @@ const PreviewForm = () => {
     setData(details.filter((item, index) => index != id));
   };
 
+  useEffect(()=>{
+console.log(pathname)
+  },[pathname])
+
   const setName = (values) => {
     onAuthStateChanged(auth, (user) => {
       console.log(user);
       if (user) {
+
+        console.log(details1)
         messageApi.info("Form is added to firestore");
         console.log(user.uid);
         console.log(details);
@@ -59,8 +82,29 @@ const PreviewForm = () => {
           collection(db, "dynamic_form"),
           JSON.parse(JSON.stringify({ uploadToFirebase }))
         );
+        const fetch = async () => {
+          const querySnapshot = await getDocs(collection(db, "dynamic_form"));
+          onAuthStateChanged(auth, (user) => {
+            console.log(user);
+            if (user) {
+              querySnapshot.docs.map((doc) => {
+                let obj = doc.data().uploadToFirebase;
+                forms.push(Object.keys(obj));
+    
+                const nestedArray = forms;
+                const flatArray = flatten(nestedArray);
+    
+                const arr = flatArray;
+                const uniqueSet = new Set(arr);
+                console.log([...uniqueSet])
+                setform([...uniqueSet]);
+              });
+            }
+          });
+        };
         setTimeout(() => {
           setData([]);
+          fetch()
         }, 1000);
       }
     });
@@ -96,12 +140,12 @@ const PreviewForm = () => {
         </Form>
       </Modal>
 
-      {details.length > 0 && (
+      {props.props.length > 0 && (
         <Form
-          className="px-4 md:px-2 md:w-10/12 lg:w-8/12 w-full flex flex-wrap justify-between"
+          className="px-4  w-full flex flex-wrap justify-between"
           form={form}
           onFinish={handleClick}>
-          {details.map((items, index) => (
+          {props.props.map((items, index) => (
             <>
               <Form.Item
                 key={index}
@@ -117,16 +161,19 @@ const PreviewForm = () => {
                 className={`${items.grid} items-start px-4`}>
                 <div className="flex">
                   <InputType props={items} />
+                  {pathname === "/GenerateForm/" &&
                   <Button
                     type="none"
                     // className="w-1/12"
                     onClick={() => remove(index)}
                     icon={<CloseOutlined />}></Button>
+  }
                 </div>
               </Form.Item>
             </>
           ))}
           <div className="w-full flex justify-center">
+            {pathname === "/GenerateForm/" &&
             <Button
               className="bg-black text-white w-min"
               htmlType="submit"
@@ -137,6 +184,7 @@ const PreviewForm = () => {
             >
               Add Name
             </Button>
+}
           </div>
         </Form>
       )}

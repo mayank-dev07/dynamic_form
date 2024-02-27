@@ -68,16 +68,18 @@ const Login = () => {
   return (
     <>
       {contextHolder}
-      <div className="w-full flex min-h-full  flex-col justify-center px-6 py-12 lg:px-8">
+      <div className="w-full h-full flex justify-center items-center">
+
+      <div className="w-11/12 sm:w-8/12 md:w-6/12 lg:w-4/12  flex min-h-full  flex-col justify-center px-6 py-12 lg:px-8 border-2 rounded-lg shadow-xl bg-slate-100">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <h2 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             {create ? "Create Account" : "Sign in"}
           </h2>
         </div>
 
-        <div className="w-full flex flex-col justify-center items-center mt-10">
+        <div className="w-full flex flex-col justify-center items-center mt-10 text-lg">
           <Form
-            className="space-y-6 w-11/12 sm:w-8/12 md:w-6/12 lg:w-4/12 "
+            className="space-y-6 w-full "
             form={form}
             layout="vertical"
             onFinish={onFinish}>
@@ -112,7 +114,7 @@ const Login = () => {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-12">
                 {create ? "Create account" : "Sign in"}
               </button>
             </div>
@@ -127,6 +129,8 @@ const Login = () => {
           </p>
         </div>
       </div>
+      </div>
+
     </>
   );
 };
