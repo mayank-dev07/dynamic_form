@@ -1,18 +1,24 @@
 "use client";
-import useStore from "@/components/zustand";
+// import useStore from "@/components/zustand";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import { Space, Table, Modal, Button,Form ,Input} from "antd";
+import { Space, Table, Modal, Button, Form, Input, message } from "antd";
 import { auth, db } from "@/app/firebase";
-import { useForm } from "antd/es/form/Form";
+// import { useForm } from "antd/es/form/Form";
 import PreviewForm from "@/components/PreviewForm";
+import { useRouter } from "next/navigation";
+import useStore from "@/components/zustand";
 
 export default function Page({ params }) {
-  console.log({ params }.params);
-  const[form1] =Form.useForm()
+  const [messageApi, contextHolder] = message.useMessage();
+  const router = useRouter();
+  console.log({ params }.params.item);
+  const detail = useStore((state) => state.form);
+  const setform = useStore((state) => state.setForm);
   const [form] = useState({ params }.params.item);
   const [data, setData] = useState([]);
+  let id = useRef("");
   let ref = useRef(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,7 +26,7 @@ export default function Page({ params }) {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  
+
   const handleCancel = () => {
     setIsModalOpen(false);
   };
@@ -67,9 +73,10 @@ export default function Page({ params }) {
         console.log(user);
         if (user) {
           querySnapshot.docs.map((doc) => {
-            console.log(doc.data().uploadToFirebase[`${form}`]);
+            console.log(doc.data().uploadToFirebase[`${form}`], doc.id);
             if (doc.data().uploadToFirebase[`${form}`]) {
               setData(doc.data().uploadToFirebase[`${form}`]);
+              id.current = doc.id;
             }
           });
         }
@@ -80,49 +87,57 @@ export default function Page({ params }) {
       ref.current = true;
     }
   }, []);
-  
-  const openModal =()=>{
-    console.log(data)
-showModal()
-  }
+
+  const openModal = () => {
+    console.log(data);
+    showModal();
+  };
+  // const fetch = async () => {
+  //   const querySnapshot = await getDocs(collection(db, "dynamic_form"));
+  //   onAuthStateChanged(auth, (user) => {
+  //     console.log(user);
+  //     console.log(querySnapshot);
+  //     if (user) {
+  //       querySnapshot.docs.map((doc) => {
+  //         console.log(doc.data());
+  //       });
+  //     }
+  //   });
+  // };
+  const deleteForm = async (view) => {
+    messageApi.info("Form deleted successfully");
+    console.log(detail);
+    console.log(view);
+    setform(detail.filter((item) => item != view));
+    await deleteDoc(doc(db, "dynamic_form", id.current));
+    setTimeout(() => {
+      router.back();
+    }, [1000]);
+  };
 
   return (
     <>
-          <Modal
-        title="Basic Modal"
+      {contextHolder}
+      <Modal
+        title="View form"
         open={isModalOpen}
         onCancel={handleCancel}
-        footer={<></>}>
-        {/* <Form form={form1} >
-          <Form.Item
-            name="name"
-            label="Form Name"
-            rules={[
-              {
-                whitespace: true,
-                required: true,
-                message: "enter the form name",
-              },
-            ]}>
-            <Input placeholder="enter form name" />
-          </Form.Item>
-          <div className="w-full flex justify-center">
-            <Button htmlType="submit" className="bg-black text-white">
-              Submit
-            </Button>
-          </div>
-
-        </Form> */}
+        footer={<></>}
+        width={900}
+      >
         <div className="w-full flex justify-center items-center mt-4">
-       <PreviewForm props={data} />
+          <PreviewForm props={data} />
         </div>
       </Modal>
       <div className=" py-12">
         <div className=" flex flex-col justify-center items-center">
-          <div className="w-11/12 grid justify-items-end"> 
-
-
-       <Button onClick={openModal}>View</Button>
+          <div className="w-11/12 grid justify-items-end">
+            <div className="flex gap-5">
+              <Button onClick={openModal}>View</Button>
+              <Button onClick={() => deleteForm({ params }.params.item)}>
+                Delete
+              </Button>
+            </div>
           </div>
           <Table
             bordered

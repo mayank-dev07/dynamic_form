@@ -12,9 +12,11 @@ import Link from "next/link";
 import useStore from "@/components/zustand";
 
 export default function RootLayout({ children }) {
-  const [forms] = useState([]);
+  const [forms, setForm] = useState([]);
   const form = useStore((state) => state.form);
   const setform = useStore((state) => state.setForm);
+  const setAdmin = useStore((state) => state.setAdmin);
+  const admin = useStore((state) => state.admin);
   let ref = useRef(false);
   const router = useRouter();
   const pathName = usePathname();
@@ -38,6 +40,7 @@ export default function RootLayout({ children }) {
 
   const showDrawer = () => {
     setOpen(true);
+    console.log(admin);
   };
   const onClose = () => {
     setOpen(false);
@@ -53,27 +56,40 @@ export default function RootLayout({ children }) {
       });
   };
 
-  useLayoutEffect(() => {
-    const fetch = async () => {
-      const querySnapshot = await getDocs(collection(db, "dynamic_form"));
-      onAuthStateChanged(auth, (user) => {
-        console.log(user);
-        if (user) {
-          querySnapshot.docs.map((doc) => {
-            let obj = doc.data().uploadToFirebase;
+  const fetch = async () => {
+    const querySnapshot = await getDocs(collection(db, "dynamic_form"));
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log(user.uid);
+        if (user.uid === "OiC6nmPb6vhYqxTGLeMYlBbrdwr2") {
+          setAdmin(true);
+        } else {
+          setAdmin(false);
+        }
+        setForm([]);
+        querySnapshot.docs.map((doc) => {
+          console.log(doc.data().uploadToFirebase);
+
+          let obj = doc.data().uploadToFirebase;
+
+          if (doc.data().uploadToFirebase.id === user.uid) {
             forms.push(Object.keys(obj));
+            console.log(forms);
 
             const nestedArray = forms;
             const flatArray = flatten(nestedArray);
 
             const arr = flatArray;
             const uniqueSet = new Set(arr);
-            console.log([...uniqueSet])
             setform([...uniqueSet]);
-          });
-        }
-      });
-    };
+          } else {
+            setform([]);
+          }
+        });
+      }
+    });
+  };
+  useLayoutEffect(() => {
     if (!ref.current) {
       fetch();
       ref.current = true;
@@ -81,21 +97,18 @@ export default function RootLayout({ children }) {
   }, []);
 
   useLayoutEffect(() => {
-    console.log(pathName);
     onAuthStateChanged(auth, (user) => {
-      console.log(user);
-
       if (user) {
         setLogged({ ...logged, email: user.email, id: user.uid });
+        console.log(user);
+        fetch();
       } else {
         router.push("/");
       }
     });
-    console.log(form)
   }, [pathName]);
 
   const showForms = () => {
-    console.log(pathName);
     router.push("/GenerateForm");
     onClose();
   };
@@ -106,7 +119,7 @@ export default function RootLayout({ children }) {
         {pathName == "/" ? (
           <></>
         ) : (
-          <header className="mt-8 md:px-20">
+          <header className="flex py-8 h-full md:px-20">
             <Drawer
               title={
                 <>
@@ -120,29 +133,35 @@ export default function RootLayout({ children }) {
               closable={false}
               onClose={onClose}
               open={open}
-              key="left">
+              key="left"
+            >
               <>
                 <div className="flex flex-col w-full text-lg">
                   <div className="w-full flex">
                     <span className="font-bold">Email:</span>
                     <span>&nbsp;{logged.email}</span>
                   </div>
-                  {/* <div className="w-full flex mt-4">
-                    <span className="font-bold">Id:</span>
-                    <span>&nbsp;{logged.id}</span>
-                  </div> */}
                 </div>
-                <div className="w-full flex justify-center items-center py-12">
+                <div className="w-full flex justify-center items-center py-12 gap-5">
+                  {admin && (
+                    <Button
+                      className="border-2 border-black bg-black text-white p-2 h-full"
+                      onClick={() => router.push("/Allocate")}
+                    >
+                      Allocate forms
+                    </Button>
+                  )}
                   {pathName == "/GenerateForm" ? (
                     <></>
                   ) : (
                     <Button
                       className="border-2 border-black bg-black text-white p-2 h-full"
-                      onClick={showForms}>
+                      onClick={showForms}
+                    >
                       Generate Form
                     </Button>
                   )}
-                </div>  
+                </div>
                 <div>
                   <Timeline>
                     {form.map(
@@ -151,7 +170,8 @@ export default function RootLayout({ children }) {
                           <Timeline.Item
                             key={index}
                             className="cursor-pointer w-max !text-lg"
-                            onClick={onClose}>
+                            onClick={onClose}
+                          >
                             <Link href={`/GenerateForm/${item}`}>{item}</Link>
                           </Timeline.Item>
                         )
@@ -176,7 +196,6 @@ export default function RootLayout({ children }) {
                   className="cursor-pointer text-xl items-start"
                 />
               </div>
-              {/* </div> */}
             </div>
           </header>
         )}

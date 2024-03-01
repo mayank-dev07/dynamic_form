@@ -47,7 +47,8 @@ const Formcomponents = () => {
         <Form
           form={form}
           onFinish={onFinish}
-          className="w-11/12 flex flex-wrap justify-evenly mt-8">
+          className="w-11/12 flex flex-wrap justify-evenly mt-8"
+        >
           <div className="flex flex-col w-full">
             <p className="font-serif font-bold text-base md:text-lg mb-5 uppercase flex justify-center">
               enter&nbsp;basics&nbsp;info&nbsp;about&nbsp;form&nbsp;input
@@ -64,14 +65,16 @@ const Formcomponents = () => {
                       message: "Please input your name",
                     },
                   ]}
-                  className="w-full md:w-1/2 px-4">
+                  className="w-full md:w-1/2 px-4"
+                >
                   <Select
                     placeholder="Please select a input type"
                     options={type}
                     showSearch
                     onChange={(value) => {
                       setData(value);
-                    }}></Select>
+                    }}
+                  ></Select>
                 </Form.Item>
                 <Form.Item
                   name="label"
@@ -83,7 +86,8 @@ const Formcomponents = () => {
                       message: "Please enter label name",
                     },
                   ]}
-                  className="w-full md:w-1/2 px-4">
+                  className="w-full md:w-1/2 px-4"
+                >
                   <Input placeholder="label name" />
                 </Form.Item>
               </div>
@@ -94,11 +98,13 @@ const Formcomponents = () => {
                   rules={[
                     { required: true, message: "Please enter required type" },
                   ]}
-                  className="w-full md:w-1/2 px-4">
+                  className="w-full md:w-1/2 px-4"
+                >
                   <Select
                     placeholder="Please select a required"
                     options={required}
-                    showSearch></Select>
+                    showSearch
+                  ></Select>
                 </Form.Item>
                 <Form.Item
                   name="placeholder"
@@ -106,7 +112,8 @@ const Formcomponents = () => {
                   rules={[
                     { whitespace: true, message: "Please enter placeholder" },
                   ]}
-                  className="w-full md:w-1/2 px-4">
+                  className="w-full md:w-1/2 px-4"
+                >
                   <Input placeholder="write a placeholder" />
                 </Form.Item>
                 {/* <Form.Item
@@ -137,11 +144,13 @@ const Formcomponents = () => {
                     message: "Please enter grid",
                   },
                 ]}
-                className="w-full">
+                className="w-full"
+              >
                 <Select
                   placeholder="Please select a input length"
                   options={grid}
-                  showSearch></Select>
+                  showSearch
+                ></Select>
               </Form.Item>
             </div>
 
@@ -160,7 +169,8 @@ const Formcomponents = () => {
                       message: "Please enter rows",
                     },
                   ]}
-                  className="w-full">
+                  className="w-full"
+                >
                   <Input placeholder="write the number of rows" />
                 </Form.Item>
               </div>
@@ -179,7 +189,8 @@ const Formcomponents = () => {
                     options={[
                       { label: "Multiple", value: "multiple" },
                       { label: "None", value: "none" },
-                    ]}></Select>
+                    ]}
+                  ></Select>
                 </Form.Item>
               </div>
             ) : (
@@ -199,7 +210,8 @@ const Formcomponents = () => {
                       {fields.map(({ key, name, ...restField }) => (
                         <div
                           key={key}
-                          className="flex md:mr-4 flex items-center h-min">
+                          className="flex md:mr-4 flex items-center h-min"
+                        >
                           <Form.Item
                             {...restField}
                             name={[name, "value"]}
@@ -210,14 +222,16 @@ const Formcomponents = () => {
                                 whitespace: true,
                                 message: "Enter option",
                               },
-                            ]}>
+                            ]}
+                          >
                             <div className="flex px-2 justify-center items-center">
                               <Input placeholder="Option" />
                               <Button
                                 type="none"
                                 className="flex self-center px-2 ml-4"
                                 onClick={() => remove(name)}
-                                icon={<CloseOutlined />}></Button>
+                                icon={<CloseOutlined />}
+                              ></Button>
                             </div>
                           </Form.Item>
                         </div>
@@ -227,7 +241,8 @@ const Formcomponents = () => {
                           type="dashed"
                           onClick={() => add()}
                           block
-                          icon={<FolderAddOutlined />}>
+                          icon={<FolderAddOutlined />}
+                        >
                           Add field
                         </Button>
                       </Form.Item>

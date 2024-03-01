@@ -1,11 +1,12 @@
-import React from "react";
 import { create } from "zustand";
 
 const useStore = create((set) => ({
+  admin: false,
   data: [],
-  form:[],
+  form: [],
   setData: (e) => set(() => ({ data: e })),
-  setForm:(e)=>set(()=>({form:e}))
+  setForm: (e) => set(() => ({ form: e })),
+  setAdmin: (e) => set(() => ({ admin: e })),
 }));
 
 export default useStore;

@@ -12,8 +12,8 @@ import { usePathname } from "next/navigation";
 
 const PreviewForm = (props) => {
   const [forms] = useState([]);
-  const pathname=usePathname()
-  console.log(props)
+  const pathname = usePathname();
+  console.log(props);
   const setData = useStore((state) => state.setData);
   const setform = useStore((state) => state.setForm);
   const details = useStore((state) => state.data);
@@ -52,7 +52,6 @@ const PreviewForm = (props) => {
     return result;
   };
 
-
   const handleClick = async () => {
     console.log(details);
     showModal();
@@ -63,16 +62,16 @@ const PreviewForm = (props) => {
     setData(details.filter((item, index) => index != id));
   };
 
-  useEffect(()=>{
-console.log(pathname)
-  },[pathname])
+  useEffect(() => {
+    console.log(pathname);
+  }, [pathname]);
 
   const setName = (values) => {
+    console.log(details);
     onAuthStateChanged(auth, (user) => {
       console.log(user);
       if (user) {
-
-        console.log(details1)
+        console.log(details1);
         messageApi.info("Form is added to firestore");
         console.log(user.uid);
         console.log(details);
@@ -88,23 +87,26 @@ console.log(pathname)
             console.log(user);
             if (user) {
               querySnapshot.docs.map((doc) => {
-                let obj = doc.data().uploadToFirebase;
-                forms.push(Object.keys(obj));
-    
-                const nestedArray = forms;
-                const flatArray = flatten(nestedArray);
-    
-                const arr = flatArray;
-                const uniqueSet = new Set(arr);
-                console.log([...uniqueSet])
-                setform([...uniqueSet]);
+                if (doc.data().uploadToFirebase.id === user.uid) {
+                  forms.push(Object.keys(obj));
+                  console.log(forms);
+
+                  const nestedArray = forms;
+                  const flatArray = flatten(nestedArray);
+
+                  const arr = flatArray;
+                  const uniqueSet = new Set(arr);
+                  setform([...uniqueSet]);
+                } else {
+                  setform([]);
+                }
               });
             }
           });
         };
         setTimeout(() => {
           setData([]);
-          fetch()
+          fetch();
         }, 1000);
       }
     });
@@ -115,10 +117,11 @@ console.log(pathname)
       {contextHolder}
 
       <Modal
-        title="Basic Modal"
+        title="Add name of the form"
         open={isModalOpen}
         onCancel={handleCancel}
-        footer={<></>}>
+        footer={<></>}
+      >
         <Form form={form1} onFinish={setName}>
           <Form.Item
             name="name"
@@ -129,7 +132,8 @@ console.log(pathname)
                 required: true,
                 message: "enter the form name",
               },
-            ]}>
+            ]}
+          >
             <Input placeholder="enter form name" />
           </Form.Item>
           <div className="w-full flex justify-center">
@@ -144,7 +148,8 @@ console.log(pathname)
         <Form
           className="px-4  w-full flex flex-wrap justify-between"
           form={form}
-          onFinish={handleClick}>
+          onFinish={handleClick}
+        >
           {props.props.map((items, index) => (
             <>
               <Form.Item
@@ -158,33 +163,28 @@ console.log(pathname)
                     message: items.message,
                   },
                 ]}
-                className={`${items.grid} items-start px-4`}>
+                className={`${items.grid} items-start px-4`}
+              >
                 <div className="flex">
                   <InputType props={items} />
-                  {pathname === "/GenerateForm/" &&
-                  <Button
-                    type="none"
-                    // className="w-1/12"
-                    onClick={() => remove(index)}
-                    icon={<CloseOutlined />}></Button>
-  }
+                  {(pathname == "/GenerateForm" ||
+                    pathname == "/GenerateForm/") && (
+                    <Button
+                      type="none"
+                      onClick={() => remove(index)}
+                      icon={<CloseOutlined />}
+                    ></Button>
+                  )}
                 </div>
               </Form.Item>
             </>
           ))}
           <div className="w-full flex justify-center">
-            {pathname === "/GenerateForm/" &&
-            <Button
-              className="bg-black text-white w-min"
-              htmlType="submit"
-              // onClick={() => {
-              //   handleClick(details);
-              //   messageApi.info("Form is added to firestore");
-              // }}
-            >
-              Add Name
-            </Button>
-}
+            {(pathname == "/GenerateForm" || pathname == "/GenerateForm/") && (
+              <Button className="bg-black text-white w-min" htmlType="submit">
+                Add Name
+              </Button>
+            )}
           </div>
         </Form>
       )}

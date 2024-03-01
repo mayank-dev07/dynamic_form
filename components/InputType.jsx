@@ -21,9 +21,10 @@ const InputType = (props) => {
             placeholder={type.placeholder}
             className="w-full"
             name={type.label}
-            value={type.value?type.value:undefined}
+            value={type.value ? type.value : undefined}
             onChange={(e) => {
               details.find((obj) => {
+                console.log(obj);
                 if (obj.label == type.label) {
                   obj.value = e.target.value;
                 }
@@ -37,7 +38,7 @@ const InputType = (props) => {
             placeholder={type.placeholder}
             className="w-full"
             name={type.label}
-            value={type.value?type.value:undefined}
+            value={type.value ? type.value : undefined}
             onChange={(e) => {
               details.find((obj) => {
                 if (obj.label == type.label) {
@@ -54,7 +55,7 @@ const InputType = (props) => {
             placeholder={type.placeholder}
             className="w-full"
             name={type.label}
-            value={type.value?type.value:undefined}
+            value={type.value ? type.value : undefined}
             options={type.values}
             mode={type.mode}
             onChange={(e) => {
@@ -80,7 +81,8 @@ const InputType = (props) => {
                 });
               }}
               name={type.label}
-              value={type.value?type.value:undefined}>
+              value={type.value ? type.value : undefined}
+            >
               {type.values}
             </Radio.Group>
           </>
@@ -98,7 +100,7 @@ const InputType = (props) => {
                 });
               }}
               name={type.label}
-              value={type.value?type.value:undefined}
+              value={type.value ? type.value : undefined}
               placeholder={type.placeholder}
             />
           </>
@@ -116,7 +118,7 @@ const InputType = (props) => {
                 });
               }}
               name={type.label}
-              value={type.value?type.value:undefined}
+              value={type.value ? type.value : undefined}
               placeholder={type.placeholder}
             />
           </>
@@ -136,7 +138,7 @@ const InputType = (props) => {
                 });
               }}
               name={type.label}
-              value={type.value?type.value:undefined}
+              value={type.value ? type.value : undefined}
             />
           </>
         );
