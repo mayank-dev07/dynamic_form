@@ -117,9 +117,9 @@ const Login = () => {
                     type: "email",
                   },
                 ]}
-                className="w-full"
+                className="w-full text-2xl"
               >
-                <Input placeholder="enter your email" />
+                <Input placeholder="enter your email" className="p-2"/>
               </Form.Item>
 
               <Form.Item
@@ -134,7 +134,7 @@ const Login = () => {
                 ]}
                 className="w-full"
               >
-                <Input.Password placeholder="enter your password" />
+                <Input.Password placeholder="enter your password" className="p-2"/>
               </Form.Item>
               <div>
                 <button
@@ -146,12 +146,12 @@ const Login = () => {
               </div>
             </Form>
             <p className="mt-4">
-              {create ? "already have a account" : "dont have account"}
+              {create ? "Aready have a account" : "Don't have account"}
               <span
                 className="text-indigo-600 cursor-pointer"
                 onClick={changeMethod}
               >
-                &nbsp; {create ? "sign in" : "create account"}
+                &nbsp; {create ? "Sign in" : "Create account"}
               </span>
             </p>
           </div>
