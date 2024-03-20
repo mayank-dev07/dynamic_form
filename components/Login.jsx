@@ -11,24 +11,14 @@ import {
 } from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
 
-// const setup = `.then((userCredential) => {console.log(userCredential);
-//   router.push("/GenerateForm");
-//       })
-//       .catch((error) => {
-//         // const errorCode = error.code;
-//         const errorMessage = error.message;
-//         messageApi.error(errorMessage);
-//       });`;
-//  useEffect(() => {
 function writeUserData(userId, email, name) {
   const db = getDatabase();
   set(ref(db, "users/" + userId), {
     email: email,
     username: name,
-    // profile_picture: imageUrl,
   });
 }
-//  }, []);
+
 const Login = () => {
   const [form] = Form.useForm();
   const router = useRouter();

@@ -3,21 +3,23 @@ import "./globals.css";
 import { Button, Drawer, Timeline } from "antd";
 import { CloseOutlined, MenuOutlined } from "@ant-design/icons";
 import { LogoutOutlined } from "@ant-design/icons";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, db } from "./firebase";
 import { usePathname, useRouter } from "next/navigation";
 import { collection, getDocs } from "firebase/firestore";
 import Link from "next/link";
 import useStore from "@/components/zustand";
+import { getDatabase ,ref, onValue,} from "firebase/database";
 
 export default function RootLayout({ children }) {
   const [forms, setForm] = useState([]);
   const form = useStore((state) => state.form);
   const setform = useStore((state) => state.setForm);
   const setAdmin = useStore((state) => state.setAdmin);
+    const setOption = useStore((state)=> state.setOption);
   const admin = useStore((state) => state.admin);
-  let ref = useRef(false);
+  let Ref = useRef(false);
   const router = useRouter();
   const pathName = usePathname();
   const [open, setOpen] = useState(false);
@@ -56,29 +58,46 @@ export default function RootLayout({ children }) {
       });
   };
 
+   const setOptions =()=>{
+    const db = getDatabase();
+    const starCountRef = ref(db, "users/");
+    console.log(starCountRef);
+    onValue(starCountRef, (snapshot) => {
+      console.log(snapshot);
+      const data = snapshot.val();
+      setOption(Object.values(data));
+      console.log(data)
+    });
+  }
+
   const fetch = async () => {
     const querySnapshot = await getDocs(collection(db, "dynamic_form"));
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log(user.uid);
+    try{
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          setLogged({ ...logged, email: user.email, id: user.uid })
+        // console.log(user.uid);
         if (user.uid === "OiC6nmPb6vhYqxTGLeMYlBbrdwr2") {
           setAdmin(true);
+          setOptions()
         } else {
           setAdmin(false);
         }
         setForm([]);
         querySnapshot.docs.map((doc) => {
           console.log(doc.data().uploadToFirebase);
-
+          
           let obj = doc.data().uploadToFirebase;
-
+          
+          setForm([])
           if (doc.data().uploadToFirebase.id === user.uid) {
             forms.push(Object.keys(obj));
             console.log(forms);
-
+            
             const nestedArray = forms;
             const flatArray = flatten(nestedArray);
-
+            
             const arr = flatArray;
             const uniqueSet = new Set(arr);
             setform([...uniqueSet]);
@@ -88,30 +107,30 @@ export default function RootLayout({ children }) {
         });
       }
     });
+  }
+  catch{
+    console.log(error)
+  }
   };
   useLayoutEffect(() => {
-    if (!ref.current) {
+    if (!Ref.current) {
+      console.log("t")
       fetch();
-      ref.current = true;
+      Ref.current = true;
     }
   }, []);
 
-  useLayoutEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setLogged({ ...logged, email: user.email, id: user.uid });
-        console.log(user);
-        fetch();
-      } else {
-        router.push("/");
-      }
-    });
-  }, [pathName]);
 
   const showForms = () => {
     router.push("/GenerateForm");
     onClose();
   };
+
+//   const allot= ()=>{
+//     setOpen(false);
+// router.push("/Allocate")
+//   }
+
 
   return (
     <html lang="en">
@@ -144,12 +163,13 @@ export default function RootLayout({ children }) {
                 </div>
                 <div className="w-full flex justify-center items-center py-12 gap-5">
                   {admin && (
-                    <Button
-                      className="border-2 border-black bg-black text-white p-2 h-full"
-                      onClick={() => router.push("/Allocate")}
-                    >
-                      Allocate forms
-                    </Button>
+                    <></>
+                    // <Button
+                    //   className="border-2 border-black bg-black text-white p-2 h-full"
+                    //   onClick={() => allot()}
+                    // >
+                    //   Allocate forms
+                    // </Button>
                   )}
                   {pathName == "/GenerateForm" ? (
                     <></>

@@ -1,44 +1,23 @@
 "use client";
-import { collection, getDocs, query } from "firebase/firestore";
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import { auth, db } from "../firebase";
-import { getDatabase, ref, onValue, get } from "firebase/database";
-import { Select, Space } from "antd";
+import React, { useEffect} from "react";
+import { Select} from "antd";
+import useStore from "@/components/zustand";
+
+const { Option } = Select;
+
 
 const Allocate = () => {
-  const [users, setUsers] = useState([]);
-  const [option, setOption] = useState([]);
-
-  const fetch = async () => {
-    const db = getDatabase();
-    const starCountRef = ref(db, "users/");
-    console.log(starCountRef);
-    onValue(starCountRef, (snapshot) => {
-      console.log(snapshot);
-      const data = snapshot.val();
-      setUsers(Object.values(data));
-    });
-  };
-
-  useLayoutEffect(() => {
-    fetch();
-  }, []);
-
+  const option = useStore((state) => state.option);
   useEffect(() => {
-    console.log(users);
-    setOption(
-      users.map((object) => {
-        console.log(object);
-        return {
-          label: object.username,
-          value: object.username,
-        };
-      })
-    );
-  }, [users]);
+    console.log(option)
+
+  }, [option]);
+
+  
 
   return (
     <>
+    {option.length > 0 &&
       <div className="w-full flex justify-center">
         <div className="container px-4">
           <Select
@@ -47,9 +26,11 @@ const Allocate = () => {
             style={{
               width: "100%",
             }}
-            placeholder="Please select users"
-            options={option}
-          />
+            placeholder="Please select users">
+          {option.map((option, index) => (
+            <Option key={index} value={option.email}>{option.username}</Option>
+            ))}
+            </Select>
           <Select
             mode="multiple"
             allowClear
@@ -57,11 +38,11 @@ const Allocate = () => {
               width: "100%",
             }}
             placeholder="Please select form"
-            // options={option}
             className="mt-4"
           />
         </div>
       </div>
+}
     </>
   );
 };

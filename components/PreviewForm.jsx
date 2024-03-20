@@ -87,6 +87,7 @@ const PreviewForm = (props) => {
             console.log(user);
             if (user) {
               querySnapshot.docs.map((doc) => {
+                  let obj = doc.data().uploadToFirebase;
                 if (doc.data().uploadToFirebase.id === user.uid) {
                   forms.push(Object.keys(obj));
                   console.log(forms);
@@ -106,7 +107,7 @@ const PreviewForm = (props) => {
         };
         setTimeout(() => {
           setData([]);
-          fetch();
+           fetch();
         }, 1000);
       }
     });
