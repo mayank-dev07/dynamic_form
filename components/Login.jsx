@@ -117,7 +117,8 @@ const Login = () => {
                     type: "email",
                   },
                 ]}
-                className="w-full text-2xl"
+                
+                className="w-full"
               >
                 <Input placeholder="enter your email" className="p-2"/>
               </Form.Item>
