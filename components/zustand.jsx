@@ -8,7 +8,7 @@ const useStore = create((set) => ({
   setData: (e) => set(() => ({ data: e })),
   setForm: (e) => set(() => ({ form: e })),
   setAdmin: (e) => set(() => ({ admin: e })),
-  setOption: (e) => set(()=>({option: e}))
+  setOption: (e) => set(()=>({option: e})),
 }));
 
 export default useStore;

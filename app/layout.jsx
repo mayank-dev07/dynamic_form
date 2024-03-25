@@ -43,6 +43,7 @@ export default function RootLayout({ children }) {
   const showDrawer = () => {
     setOpen(true);
     console.log(admin);
+    fetch()
   };
   const onClose = () => {
     setOpen(false);
@@ -77,13 +78,8 @@ export default function RootLayout({ children }) {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           setLogged({ ...logged, email: user.email, id: user.uid })
-        // console.log(user.uid);
-        if (user.uid === "OiC6nmPb6vhYqxTGLeMYlBbrdwr2") {
-          setAdmin(true);
-          setOptions()
-        } else {
-          setAdmin(false);
-        }
+        console.log(user.uid);
+        
         setForm([]);
         querySnapshot.docs.map((doc) => {
           console.log(doc.data().uploadToFirebase);
@@ -91,7 +87,8 @@ export default function RootLayout({ children }) {
           let obj = doc.data().uploadToFirebase;
           
           setForm([])
-          if (doc.data().uploadToFirebase.id === user.uid) {
+          if (doc.data().uploadToFirebase.id == user.uid) {
+            console.log("i")
             forms.push(Object.keys(obj));
             console.log(forms);
             
@@ -101,9 +98,13 @@ export default function RootLayout({ children }) {
             const arr = flatArray;
             const uniqueSet = new Set(arr);
             setform([...uniqueSet]);
-          } else {
-            setform([]);
-          }
+          } 
+          if (user.uid === "OiC6nmPb6vhYqxTGLeMYlBbrdwr2") {
+          setAdmin(true);
+          setOptions()
+        } else {
+          setAdmin(false);
+        }
         });
       }
     });
